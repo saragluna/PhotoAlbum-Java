@@ -229,27 +229,20 @@ class ControllerIntegrationTest {
 
     @Test
     void testDetailPage_WithNavigationPhotos_IncludesPreviousAndNext() throws Exception {
-        try {
-            // Given - photos with distinct timestamps
-            LocalDateTime now = LocalDateTime.now();
-            Photo photo1 = createTestPhoto("photo1.jpg", now.minusDays(2));
-            Thread.sleep(100); // Ensure different timestamps
-            Photo photo2 = createTestPhoto("photo2.jpg", now.minusDays(1));
-            Thread.sleep(100); // Ensure different timestamps
-            Photo photo3 = createTestPhoto("photo3.jpg", now);
+        // Given - photos with distinct timestamps using explicit times
+        LocalDateTime baseTime = LocalDateTime.now().minusDays(10);
+        Photo photo1 = createTestPhoto("photo1.jpg", baseTime);
+        Photo photo2 = createTestPhoto("photo2.jpg", baseTime.plusHours(1));
+        Photo photo3 = createTestPhoto("photo3.jpg", baseTime.plusHours(2));
 
-            // When/Then
-            mockMvc.perform(get("/detail/" + photo2.getId()))
-                    .andExpect(status().isOk())
-                    .andExpect(view().name("detail"))
-                    .andExpect(model().attributeExists("photo"))
-                    .andExpect(model().attributeExists("previousPhotoId"))
-                    .andExpect(model().attributeExists("nextPhotoId"));
-            // Exact IDs may vary due to timing, so just verify attributes exist
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
-        }
+        // When/Then
+        mockMvc.perform(get("/detail/" + photo2.getId()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("detail"))
+                .andExpect(model().attributeExists("photo"))
+                .andExpect(model().attributeExists("previousPhotoId"))
+                .andExpect(model().attributeExists("nextPhotoId"));
+        // Exact IDs may vary due to timing, so just verify attributes exist
     }
 
     @Test
