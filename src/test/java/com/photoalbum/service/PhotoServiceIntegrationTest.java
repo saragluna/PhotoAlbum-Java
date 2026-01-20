@@ -33,13 +33,13 @@ class PhotoServiceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void testUploadPhotoSuccess() {
-        // Given - Create a simple JPEG image (minimal valid JPEG header)
-        byte[] jpegData = createMinimalJpegData();
+        // Given - Create a simple test image data (dimensions won't be extracted)
+        byte[] imageData = "fake-jpeg-data".getBytes();
         MockMultipartFile file = new MockMultipartFile(
             "file",
             "test-image.jpg",
             "image/jpeg",
-            jpegData
+            imageData
         );
 
         // When
@@ -118,19 +118,19 @@ class PhotoServiceIntegrationTest extends AbstractIntegrationTest {
     @Test
     void testGetAllPhotos() throws InterruptedException {
         // Given
-        byte[] jpegData = createMinimalJpegData();
+        byte[] imageData = "fake-jpeg-data".getBytes();
         
-        MockMultipartFile file1 = new MockMultipartFile("file", "photo1.jpg", "image/jpeg", jpegData);
+        MockMultipartFile file1 = new MockMultipartFile("file", "photo1.jpg", "image/jpeg", imageData);
         photoService.uploadPhoto(file1);
         
         Thread.sleep(100);
         
-        MockMultipartFile file2 = new MockMultipartFile("file", "photo2.jpg", "image/jpeg", jpegData);
+        MockMultipartFile file2 = new MockMultipartFile("file", "photo2.jpg", "image/jpeg", imageData);
         photoService.uploadPhoto(file2);
         
         Thread.sleep(100);
         
-        MockMultipartFile file3 = new MockMultipartFile("file", "photo3.jpg", "image/jpeg", jpegData);
+        MockMultipartFile file3 = new MockMultipartFile("file", "photo3.jpg", "image/jpeg", imageData);
         photoService.uploadPhoto(file3);
 
         // When
@@ -147,8 +147,8 @@ class PhotoServiceIntegrationTest extends AbstractIntegrationTest {
     @Test
     void testGetPhotoById() {
         // Given
-        byte[] jpegData = createMinimalJpegData();
-        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", jpegData);
+        byte[] imageData = "fake-jpeg-data".getBytes();
+        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", imageData);
         UploadResult uploadResult = photoService.uploadPhoto(file);
 
         // When
@@ -172,8 +172,8 @@ class PhotoServiceIntegrationTest extends AbstractIntegrationTest {
     @Test
     void testDeletePhoto() {
         // Given
-        byte[] jpegData = createMinimalJpegData();
-        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", jpegData);
+        byte[] imageData = "fake-jpeg-data".getBytes();
+        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", imageData);
         UploadResult uploadResult = photoService.uploadPhoto(file);
         String photoId = uploadResult.getPhotoId();
 
@@ -200,19 +200,19 @@ class PhotoServiceIntegrationTest extends AbstractIntegrationTest {
     @Test
     void testGetPreviousPhoto() throws InterruptedException {
         // Given
-        byte[] jpegData = createMinimalJpegData();
+        byte[] imageData = "fake-jpeg-data".getBytes();
         
-        MockMultipartFile file1 = new MockMultipartFile("file", "photo1.jpg", "image/jpeg", jpegData);
+        MockMultipartFile file1 = new MockMultipartFile("file", "photo1.jpg", "image/jpeg", imageData);
         UploadResult result1 = photoService.uploadPhoto(file1);
         
         Thread.sleep(100);
         
-        MockMultipartFile file2 = new MockMultipartFile("file", "photo2.jpg", "image/jpeg", jpegData);
+        MockMultipartFile file2 = new MockMultipartFile("file", "photo2.jpg", "image/jpeg", imageData);
         UploadResult result2 = photoService.uploadPhoto(file2);
         
         Thread.sleep(100);
         
-        MockMultipartFile file3 = new MockMultipartFile("file", "photo3.jpg", "image/jpeg", jpegData);
+        MockMultipartFile file3 = new MockMultipartFile("file", "photo3.jpg", "image/jpeg", imageData);
         UploadResult result3 = photoService.uploadPhoto(file3);
 
         Photo currentPhoto = photoService.getPhotoById(result2.getPhotoId()).get();
@@ -228,19 +228,19 @@ class PhotoServiceIntegrationTest extends AbstractIntegrationTest {
     @Test
     void testGetNextPhoto() throws InterruptedException {
         // Given
-        byte[] jpegData = createMinimalJpegData();
+        byte[] imageData = "fake-jpeg-data".getBytes();
         
-        MockMultipartFile file1 = new MockMultipartFile("file", "photo1.jpg", "image/jpeg", jpegData);
+        MockMultipartFile file1 = new MockMultipartFile("file", "photo1.jpg", "image/jpeg", imageData);
         UploadResult result1 = photoService.uploadPhoto(file1);
         
         Thread.sleep(100);
         
-        MockMultipartFile file2 = new MockMultipartFile("file", "photo2.jpg", "image/jpeg", jpegData);
+        MockMultipartFile file2 = new MockMultipartFile("file", "photo2.jpg", "image/jpeg", imageData);
         UploadResult result2 = photoService.uploadPhoto(file2);
         
         Thread.sleep(100);
         
-        MockMultipartFile file3 = new MockMultipartFile("file", "photo3.jpg", "image/jpeg", jpegData);
+        MockMultipartFile file3 = new MockMultipartFile("file", "photo3.jpg", "image/jpeg", imageData);
         UploadResult result3 = photoService.uploadPhoto(file3);
 
         Photo currentPhoto = photoService.getPhotoById(result2.getPhotoId()).get();
@@ -256,10 +256,10 @@ class PhotoServiceIntegrationTest extends AbstractIntegrationTest {
     @Test
     void testUploadMultipleDifferentFileTypes() {
         // Given
-        byte[] jpegData = createMinimalJpegData();
-        byte[] pngData = createMinimalPngData();
+        byte[] imageData = "fake-jpeg-data".getBytes();
+        byte[] pngData = "fake-png-data".getBytes();
         
-        MockMultipartFile jpegFile = new MockMultipartFile("file", "test.jpg", "image/jpeg", jpegData);
+        MockMultipartFile jpegFile = new MockMultipartFile("file", "test.jpg", "image/jpeg", imageData);
         MockMultipartFile pngFile = new MockMultipartFile("file", "test.png", "image/png", pngData);
 
         // When
@@ -272,42 +272,5 @@ class PhotoServiceIntegrationTest extends AbstractIntegrationTest {
         
         List<Photo> allPhotos = photoService.getAllPhotos();
         assertEquals(2, allPhotos.size());
-    }
-
-    /**
-     * Helper method to create minimal valid JPEG data
-     */
-    private byte[] createMinimalJpegData() {
-        // Minimal JPEG structure: SOI + APP0 + SOF + SOS + EOI
-        return new byte[] {
-            (byte) 0xFF, (byte) 0xD8, // SOI (Start of Image)
-            (byte) 0xFF, (byte) 0xE0, // APP0
-            0x00, 0x10, // Length
-            0x4A, 0x46, 0x49, 0x46, 0x00, // JFIF\0
-            0x01, 0x01, // Version
-            0x00, // Units
-            0x00, 0x01, 0x00, 0x01, // X/Y density
-            0x00, 0x00, // Thumbnail size
-            (byte) 0xFF, (byte) 0xD9 // EOI (End of Image)
-        };
-    }
-
-    /**
-     * Helper method to create minimal valid PNG data
-     */
-    private byte[] createMinimalPngData() {
-        // Minimal PNG structure: signature + IHDR + IEND
-        return new byte[] {
-            (byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, // PNG signature
-            0x00, 0x00, 0x00, 0x0D, // IHDR length
-            0x49, 0x48, 0x44, 0x52, // IHDR
-            0x00, 0x00, 0x00, 0x01, // Width
-            0x00, 0x00, 0x00, 0x01, // Height
-            0x08, 0x06, 0x00, 0x00, 0x00, // Bit depth, color type, etc.
-            0x1F, 0x15, (byte) 0xC4, (byte) 0x89, // CRC
-            0x00, 0x00, 0x00, 0x00, // IEND length
-            0x49, 0x45, 0x4E, 0x44, // IEND
-            (byte) 0xAE, 0x42, 0x60, (byte) 0x82 // CRC
-        };
     }
 }
