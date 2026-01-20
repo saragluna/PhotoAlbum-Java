@@ -154,6 +154,39 @@ mvn clean package
 java -jar target/photo-album-1.0.0.jar
 ```
 
+## Testing
+
+The application includes comprehensive integration tests using Testcontainers with PostgreSQL.
+
+### Running Tests
+
+```bash
+# Run all tests (unit + integration)
+mvn test
+
+# Run only integration tests
+mvn test -Dtest=*IntegrationTest
+
+# Run specific test class
+mvn test -Dtest=PhotoRepositoryIntegrationTest
+```
+
+### Test Coverage
+
+- **Total Tests**: 35 (100% passing)
+- **Repository Layer**: 9 tests (database operations, BLOB storage, pagination)
+- **Service Layer**: 12 tests (business logic, validation, file handling)
+- **Controller Layer**: 13 tests (REST APIs, file upload, end-to-end workflows)
+- **Application Context**: 1 test (Spring Boot context loading)
+
+### Test Requirements
+
+- Docker must be running (for Testcontainers PostgreSQL)
+- Tests automatically start and manage PostgreSQL container
+- No manual database setup required
+
+For detailed test documentation, see [INTEGRATION_TEST_SUMMARY.md](INTEGRATION_TEST_SUMMARY.md).
+
 ## Troubleshooting
 
 ### PostgreSQL Database Issues
