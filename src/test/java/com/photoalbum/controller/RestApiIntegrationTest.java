@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -181,7 +182,7 @@ public class RestApiIntegrationTest {
             .andExpect(redirectedUrl("/"));
 
         // Verify the photo was deleted
-        assert(!photoRepository.findById(savedPhoto.getId()).isPresent());
+        assertFalse(photoRepository.findById(savedPhoto.getId()).isPresent(), "Photo should be deleted");
     }
 
     @Test
